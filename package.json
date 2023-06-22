@@ -1,0 +1,19 @@
+{
+  "name": "aritha-api",
+  "version": "0.0.1",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "aritha-api",
+    "aritha"
+  ],
+  "author": "Aritha Consulting Services",
+  "license": "",
+  "dependencies": {
+    "axios": "^0.21.4",
+    "swagger-parser": "^10.0.3"
+  }
+}
