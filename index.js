@@ -1,20 +1,24 @@
-const SwaggerParser = require("swagger-parser");
 const axios = require("axios");
-
 const path = require("path");
-const apiDocsPath = path.join("public", "aritha.json"); // http://192.168.1.106:8080/v2/api-docs
+const OpenAPIParser = require("@readme/openapi-parser");
 
-var apiDocs = {};
-var defaultOptions = {};
+// const apiDocsPath = path.join("public", "aritha.json");
+const apiDocsPath = "http://35.168.187.87:5001/custom-openapi.json";
 
-SwaggerParser.validate(apiDocsPath, (err, api) => {
+let apiDocs = {};
+let defaultOptions = {};
+
+OpenAPIParser.validate(apiDocsPath, (err, api) => {
   if (err) {
     console.error(err);
   } else {
     console.log("API name: %s, Version: %s", api.info.title, api.info.version);
+    console.log("file: index.js:18  api", api);
     apiDocs = constructData(api);
+    console.log("SwaggerParser.validate > apiDocs", apiDocs);
 
-    fetch("getEmployees", { params: { pageNo: 2, pageSize: 5 } })
+    api
+      .fetch("getEmployees", { params: { pageNo: 2, pageSize: 5 } })
       // fetch("saveEmployee", {
       //   data: {
       //     id: 250,
@@ -38,7 +42,7 @@ function constructData(api) {
 
     const output = [];
     const routes = {};
-    Object.entries(api.paths).forEach((a) => {
+    Object.entries(api?.paths).forEach((a) => {
       output.push({
         url: a[0],
         paths: a[1],
@@ -46,8 +50,8 @@ function constructData(api) {
     });
 
     output.forEach((o) => {
-      const singleRoutePaths = o.paths;
-      const url = o.url;
+      const singleRoutePaths = o?.paths;
+      const url = o?.url;
 
       Object.entries(singleRoutePaths).forEach((a) => {
         routes[a[1]["operationId"]] = { method: a[0], path: url, ...a[1] };
@@ -55,7 +59,7 @@ function constructData(api) {
     });
 
     return {
-      host: api.servers[0].url || "URL NOT FOUND",
+      host: api?.servers?.[0]?.url || "URL NOT FOUND",
       paths: routes || {},
       info: api.info || {},
     };
@@ -64,6 +68,7 @@ function constructData(api) {
 
 function getHeaders() {
   if (apiDocs) {
+    //
   }
 }
 
